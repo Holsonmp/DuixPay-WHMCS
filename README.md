@@ -1,0 +1,2 @@
+# DuixPay-WHMCS
+DuixPay WHMCS

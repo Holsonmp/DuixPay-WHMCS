@@ -33,28 +33,20 @@ if (!$gatewayParams['type']) {
     die("Module Not Activated");
 }
 
-
-$status = $_POST['status'];
-$signature = $_POST['signature'];
-$identifier = $_POST['identifier'];
-$data = $_POST['data'];
-
-// Générez votre signature
-$customKey = $data['amount'].$identifier;
-$secret = $gatewayParams['secret_key'];
-$mySignature = strtoupper(hash_hmac('sha256', $customKey , $secret));
+$ipnData = $_POST["data"];
+$data = json_decode($ipnData, true);
 
 
 // Retrieve data returned in payment gateway callback
 // Varies per payment gateway
-$success = $_POST["status"];
-$invoiceId = $_POST["signature"];
-$transactionId = $_POST["trx"];
-$paymentAmount = $_POST["amount"];
+$success = $data['status'];
+$invoiceId = $data["identifier"];
+$transactionId = $data["payment_trx"];
+$paymentAmount = $data["amount"];
 $paymentFee = 0;
 //$hash = $_POST["x_hash"];
 
-$transactionStatus = $success ? 'ok' : 'Failed';
+$transactionStatus = $success ? 'success' : 'failed';
 
 /**
  * Validate callback authenticity.
@@ -110,7 +102,7 @@ if ($hash != md5($invoiceId . $transactionId . $paymentAmount . $secretKey)) {
  */
  logTransaction($gatewayParams['name'], $_POST, $transactionStatus);
 
-if ($success == 'ok') {
+if ($success == 'success') {
 
     /**
      * Add Invoice Payment.

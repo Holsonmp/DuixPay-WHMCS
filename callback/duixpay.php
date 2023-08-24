@@ -32,17 +32,25 @@ $gatewayParams = getGatewayVariables($gatewayModuleName);
 if (!$gatewayParams['type']) {
     die("Module Not Activated");
 }
+/*
+$status = $_POST['status'];
+$signature = $_POST['signature'];
+$identifier = $_POST['identifier'];
+$payment_trx = $_POST['data']['payment_trx'];
+$amount = $_POST['data']['amount'];
+$account_holder = $_POST['data']['account_holder'];
+$payment_type = $_POST['data']['payment_type'];
+$payment_timestamp = $_POST['data']['payment_timestamp'];
+$charge = $_POST['data']['charge'];
+$currency_code = $_POST['data']['currency']['code'];
+$currency_symbol = $_POST['data']['currency']['symbol'];
 
-$ipnData = $_POST["data"];
-$data = json_decode($ipnData, true);
+*/
 
-
-// Retrieve data returned in payment gateway callback
-// Varies per payment gateway
-$success = $data['status'];
-$invoiceId = $data["identifier"];
-$transactionId = $data["payment_trx"];
-$paymentAmount = $data["amount"];
+$success = $_POST['status'];
+$invoiceId = $_POST['identifier'];
+$transactionId = $_POST['data']['payment_trx'];
+$paymentAmount = $_POST['data']['amount'];
 $paymentFee = 0;
 //$hash = $_POST["x_hash"];
 
@@ -100,7 +108,7 @@ if ($hash != md5($invoiceId . $transactionId . $paymentAmount . $secretKey)) {
  * @param string|array $debugData    Data to log
  * @param string $transactionStatus  Status
  */
- logTransaction($gatewayParams['name'], $_POST, $transactionStatus);
+logTransaction($gatewayParams['name'], $_POST, $transactionStatus);
 
 if ($success == 'success') {
 
